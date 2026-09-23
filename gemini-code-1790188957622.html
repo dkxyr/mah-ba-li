@@ -1,0 +1,1578 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>מה מתחשק לי | פלטפורמת ההחלטות שלכם</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --primary: #f43f5e;
+      --primary-hover: #e11d48;
+      --accent: #2563eb;
+      --accent-soft: #eff6ff;
+      --success: #16a34a;
+      --success-soft: #f0fdf4;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --neutral: #64748b;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 12px 24px -4px rgba(15, 23, 42, 0.08);
+      --shadow-lg: 0 20px 35px -8px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      font-family: 'Rubik', sans-serif;
+      background: linear-gradient(180deg, #f1f5f9 0%, #f8fafc 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      overflow-x: hidden;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 32px;
+      padding: 24px;
+      position: relative;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+
+    .btn-text-back {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-family: inherit;
+    }
+
+    .btn-text-back:hover {
+      color: var(--primary);
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 6px;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      text-align: center;
+      margin-bottom: 18px;
+      line-height: 1.5;
+    }
+
+    .rules-card {
+      width: 100%;
+      background: #f8fafc;
+      border: 1.5px solid var(--card-border);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 10px 0 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-align: right;
+    }
+
+    .rule-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: #334155;
+    }
+
+    .rule-tag {
+      padding: 3px 8px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.78rem;
+      flex-shrink: 0;
+    }
+
+    .rule-tag.green { background: #dcfce7; color: #15803d; }
+    .rule-tag.orange { background: #f1f5f9; color: #475569; }
+    .rule-tag.slate { background: #eff6ff; color: #2563eb; }
+    .rule-tag.red { background: #fee2e2; color: #b91c1c; }
+
+    .algo-explainer {
+      width: 100%;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .algo-explainer-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .algo-explainer-text {
+      font-size: 0.82rem;
+      color: #334155;
+      line-height: 1.45;
+    }
+
+    .hub-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin: 10px 0 16px;
+    }
+
+    .hub-card {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 22px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      position: relative;
+      text-align: right;
+    }
+
+    .hub-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .hub-card.disabled {
+      background: #f8fafc;
+      opacity: 0.8;
+      cursor: pointer;
+    }
+
+    .hub-icon-box {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .hub-info {
+      flex: 1;
+    }
+
+    .hub-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hub-desc {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    .hub-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 8px;
+      background: #f1f5f9;
+      color: #64748b;
+    }
+
+    .hub-badge.active {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      width: 100%;
+      margin-bottom: 16px;
+    }
+
+    .mode-btn {
+      padding: 10px 6px;
+      border-radius: 14px;
+      border: 1.5px solid var(--card-border);
+      background: #f8fafc;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.2s ease;
+    }
+
+    .mode-btn.selected {
+      border-color: var(--primary);
+      background: #fff1f2;
+      color: var(--primary);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .input-group {
+      width: 100%;
+      margin-bottom: 14px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .users-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .user-input-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .user-input-row input {
+      flex: 1;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1.5px solid var(--card-border);
+      background: #f8fafc;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .user-input-row input:focus {
+      border-color: var(--primary);
+      background: #fff;
+    }
+
+    .btn-remove-user {
+      background: #fee2e2;
+      color: var(--danger);
+      border: none;
+      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-add-user {
+      width: 100%;
+      padding: 9px;
+      border-radius: 12px;
+      border: 1.5px dashed var(--card-border);
+      background: #f8fafc;
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .platform-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      width: 100%;
+      margin: 8px 0 18px;
+    }
+
+    .platform-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1.5px solid var(--card-border);
+      color: #334155;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .platform-btn.selected {
+      border-color: var(--primary);
+      background: #fff1f2;
+      color: #e11d48;
+      box-shadow: 0 3px 8px rgba(244, 63, 94, 0.1);
+    }
+
+    .btn-main {
+      width: 100%;
+      padding: 14px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--primary), #e11d48);
+      color: white;
+      font-size: 1.05rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(225, 29, 72, 0.25);
+      transition: transform 0.1s ease;
+      font-family: inherit;
+    }
+
+    .btn-main:active {
+      transform: scale(0.98);
+    }
+
+    .btn-refresh-batch {
+      width: 100%;
+      padding: 13px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #4f46e5, #3b82f6);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(79, 70, 229, 0.25);
+      transition: transform 0.1s ease;
+      font-family: inherit;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .btn-refresh-batch:active {
+      transform: scale(0.98);
+    }
+
+    .turn-badge {
+      padding: 6px 14px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .deck-container {
+      width: 100%;
+      height: 380px;
+      position: relative;
+      margin: 8px 0 14px;
+      perspective: 1000px;
+    }
+
+    .swipe-card {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 28px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      text-align: right;
+      padding: 24px;
+      box-shadow: var(--shadow-md);
+      border: 1.5px solid var(--card-border);
+      cursor: grab;
+      touch-action: none;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.1s ease, opacity 0.2s ease;
+    }
+
+    .swipe-card:active {
+      cursor: grabbing;
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15,23,42,0.1) 0%, rgba(15,23,42,0.68) 50%, rgba(15,23,42,0.96) 100%);
+      pointer-events: none;
+    }
+
+    .card-content {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      pointer-events: none;
+    }
+
+    .card-tag {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.28);
+      backdrop-filter: blur(8px);
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .card-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+      line-height: 1.3;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: #e2e8f0;
+      line-height: 1.4;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    .stamp {
+      position: absolute;
+      top: 18px;
+      padding: 7px 16px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 1.15rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.1s ease;
+      z-index: 10;
+    }
+
+    .stamp.yes {
+      right: 18px;
+      border: 2.5px solid var(--success);
+      color: var(--success);
+      background: #ffffff;
+      transform: rotate(10deg);
+    }
+
+    .stamp.less {
+      left: 18px;
+      border: 2.5px solid #475569;
+      color: #334155;
+      background: #ffffff;
+      transform: rotate(-10deg);
+    }
+
+    .controls-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .controls-buttons-row {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .btn-neutral-single {
+      flex: 1;
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      color: #334155;
+      padding: 11px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-neutral-single:active {
+      transform: scale(0.96);
+      background: #f1f5f9;
+    }
+
+    .btn-veto-single {
+      flex: 1;
+      background: #fff;
+      border: 2px solid #fecaca;
+      color: var(--danger);
+      padding: 11px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .btn-veto-single:active {
+      transform: scale(0.96);
+      background: var(--danger-soft);
+    }
+
+    .btn-veto-single.disabled {
+      opacity: 0.4;
+      border-color: #cbd5e1;
+      color: #94a3b8;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .swipe-hint {
+      font-size: 0.8rem;
+      color: #64748b;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .practice-feedback-card {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 24px;
+      padding: 22px;
+      text-align: center;
+      width: 100%;
+      box-shadow: var(--shadow-md);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin: 12px 0;
+    }
+
+    .practice-feedback-card.active {
+      display: flex;
+    }
+
+    .feedback-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #dcfce7;
+      color: var(--success);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 12px;
+    }
+
+    .results-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .result-card {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 20px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.15s ease, border-color 0.2s ease;
+    }
+
+    .result-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    .result-poster {
+      width: 68px;
+      height: 100px;
+      border-radius: 12px;
+      object-fit: cover;
+      background: #f1f5f9;
+      flex-shrink: 0;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .result-info {
+      flex: 1;
+      text-align: right;
+    }
+
+    .result-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+
+    .result-provider {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 3px;
+    }
+
+    .match-tag {
+      padding: 5px 10px;
+      border-radius: 10px;
+      background: var(--success-soft);
+      color: var(--success);
+      font-weight: 800;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      text-align: right;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-poster {
+      width: 100%;
+      height: 240px;
+      object-fit: cover;
+      border-radius: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .loader {
+      border: 4px solid #e2e8f0;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      animation: spin 0.8s linear infinite;
+      margin: 30px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- מסך 0: ברוכים הבאים -->
+    <div id="screen-welcome" class="screen active">
+      <div style="width: 74px; height: 74px; border-radius: 50%; background: #eff6ff; color: var(--accent); display: flex; align-items: center; justify-content: center; margin-bottom: 14px;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+          <line x1="12" y1="17" x2="12.01" y2="17"></line>
+        </svg>
+      </div>
+
+      <h1>ברוכים הבאים ל"מה מתחשק לי"</h1>
+      <p class="subtitle">הפלטפורמה שמכריעה את הוויכוחים היומיומיים בקלות ובכיף. במקום להתווכח שעות – פשוט מחליקים!</p>
+
+      <div class="rules-card">
+        <div class="rule-row"><span class="rule-tag green">👉 ימינה</span><div><strong>"בא לי!"</strong> – דברים שממש עושים לכם חשק כרגע.</div></div>
+        <div class="rule-row"><span class="rule-tag orange">👈 שמאלה</span><div><strong>"פחות"</strong> – מעדיפים לוותר אם אפשר.</div></div>
+        <div class="rule-row"><span class="rule-tag slate">🤷 לא משנה לי</span><div><strong>ניטרלי</strong> – זורמים לגמרי אם מישהו אחר רוצה.</div></div>
+        <div class="rule-row"><span class="rule-tag red">⛔ ממש לא</span><div><strong>קו אדום</strong> – פוסל את האפשרות מיידית לכולם (מוגבל לפעם 1 בלבד!).</div></div>
+      </div>
+
+      <div class="algo-explainer">
+        <div class="algo-explainer-title"><span>🧠</span><span>איך זה עובד?</span></div>
+        <div class="algo-explainer-text">
+          1. <strong>חיבור ישיר למנויים:</strong> שולפים אך ורק מתוך ספריות המנויים הפעילים שלכם.<br>
+          2. <strong>מנוע ההתאמה (Match Score):</strong> מחשב את אחוז הרצונות שהכותר מגשים.<br>
+          3. <strong>עולם הצעות מתחדש:</strong> לחיצה אחת תביא מיד 3 אפשרויות חדשות ומותאמות!
+        </div>
+      </div>
+
+      <button class="btn-main" onclick="goToHub()">בואו נבחר מה להחליט! 🚀</button>
+    </div>
+
+    <!-- מסך Hub: מרכז הקטגוריות הראשי -->
+    <div id="screen-hub" class="screen">
+      <div style="font-size: 2.2rem; margin-bottom: 8px;">✨</div>
+      <h1>על מה מתלבטים עכשיו?</h1>
+      <p class="subtitle">בחרו את התחום שבו אתם צריכים הכרעה מהירה:</p>
+      <div class="hub-grid">
+        <div class="hub-card" onclick="startMoviesCategory()">
+          <div class="hub-icon-box" style="background: #fff1f2; color: var(--primary);">🎬</div>
+          <div class="hub-info">
+            <div class="hub-title">מה מתחשק לי לראות <span class="hub-badge active">זמין לצפייה</span></div>
+            <div class="hub-desc">עשרות ומאות סרטים וסדרות מאומתים מכל המנויים שלכם בהתאמה מדויקת לוייב.</div>
+          </div>
+          <div style="color: var(--primary); font-weight: 800; font-size: 1.1rem;">←</div>
+        </div>
+
+        <div class="hub-card disabled" onclick="showConstructionNotice('מה מתחשק לי לאכול', '🍕')">
+          <div class="hub-icon-box" style="background: #fef3c7; color: #d97706;">🍕</div>
+          <div class="hub-info">
+            <div class="hub-title">מה מתחשק לי לאכול <span class="hub-badge">בקרוב</span></div>
+            <div class="hub-desc">הכרעה מהירה בין מסעדות, משלוחים, בישול בבית וסגנונות קולינריים.</div>
+          </div>
+          <div style="color: #cbd5e1; font-weight: 800; font-size: 1.1rem;">🔒</div>
+        </div>
+
+        <div class="hub-card disabled" onclick="showConstructionNotice('מה מתחשק לי לעשות', '🎯')">
+          <div class="hub-icon-box" style="background: #eff6ff; color: var(--accent);">🎯</div>
+          <div class="hub-info">
+            <div class="hub-title">מה מתחשק לי לעשות <span class="hub-badge">בקרוב</span></div>
+            <div class="hub-desc">רעיונות לדייטים, פעילויות עם חברים, טיולים ובילויים ספונטניים.</div>
+          </div>
+          <div style="color: #cbd5e1; font-weight: 800; font-size: 1.1rem;">🔒</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- מסך ביניים לקטגוריות שבבנייה -->
+    <div id="screen-construction" class="screen">
+      <div id="construction-icon" style="font-size: 3.5rem; margin-bottom: 12px;">🚧</div>
+      <h1 id="construction-title">בבנייה בימים אלו!</h1>
+      <p class="subtitle" style="margin-bottom: 24px;">אנחנו עובדים במרץ על המודול הזה. בינתיים, בואו נחליט מה רואים על המסך!</p>
+      <button class="btn-main" onclick="startMoviesCategory()">בואו נבחר מה לראות 🎬</button>
+      <button class="btn-text-back" style="margin-top: 14px; font-size: 0.9rem;" onclick="goToHub()">חזרה לתפריט הראשי</button>
+    </div>
+
+    <!-- מסך הגדרות צפייה -->
+    <div id="screen-setup" class="screen">
+      <div class="top-bar">
+        <button class="btn-text-back" onclick="goToHub()">← לתפריט הראשי</button>
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--primary);">מה רואים 🎬</span>
+      </div>
+      <h1 id="dynamic-title">מה רואים היום?</h1>
+      <p class="subtitle">בוחרים פורמט ומנויים, עונים על כמה תחושות – ומכריעים!</p>
+
+      <div class="input-group">
+        <label>עם מי רואים?</label>
+        <div class="mode-selector">
+          <div class="mode-btn" onclick="selectMode('solo', this)">
+            <span style="font-size: 1.2rem;">👤</span><span>לבד</span>
+          </div>
+          <div class="mode-btn selected" onclick="selectMode('couple', this)">
+            <span style="font-size: 1.2rem;">💑</span><span>זוג</span>
+          </div>
+          <div class="mode-btn" onclick="selectMode('friends', this)">
+            <span style="font-size: 1.2rem;">🍿</span><span>חברים</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>שמות המשתתפים:</label>
+        <div class="users-container" id="users-inputs-list"></div>
+        <button type="button" id="btn-add-friend" class="btn-add-user" style="display: none;" onclick="addFriendInput()">+ הוסף חבר/ה (עד 5)</button>
+      </div>
+
+      <div class="input-group">
+        <label>מנויים פעילים:</label>
+        <div class="platform-grid">
+          <div class="platform-btn selected" data-provider-id="8" data-name="נטפליקס">נטפליקס</div>
+          <div class="platform-btn selected" data-provider-id="337" data-name="דיסני+">דיסני+</div>
+          <div class="platform-btn" data-provider-id="350" data-name="אפל TV+">אפל TV+</div>
+          <div class="platform-btn" data-provider-id="119" data-name="אמזון פריים">אמזון פריים</div>
+          <div class="platform-btn selected" data-provider-id="yes" data-name="yes / STING">yes / STING</div>
+          <div class="platform-btn" data-provider-id="hot" data-name="HOT / NEXT">HOT / NEXT</div>
+          <div class="platform-btn selected" data-provider-id="kan" data-name="כאן BOX">כאן BOX (חינם)</div>
+        </div>
+      </div>
+      <button class="btn-main" onclick="goToPractice()">המשך לסיבוב אימון קצר 🚀</button>
+    </div>
+
+    <!-- מסך תרגול חי -->
+    <div id="screen-practice" class="screen">
+      <div class="turn-badge" style="background: #fef3c7; color: #b45309;">💡 סיבוב אימון קצרצר</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;" id="practice-subtitle">נסו להחליק את הכרטיס כדי לראות איך זה עובד:</div>
+      
+      <div class="deck-container" id="practice-deck-container"></div>
+
+      <div class="practice-feedback-card" id="practice-feedback-card">
+        <div class="feedback-icon">✓</div>
+        <h2 style="font-size: 1.25rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">בול! ככה זה עובד</h2>
+        <p style="font-size: 0.88rem; color: #475569; line-height: 1.55; margin-bottom: 16px;">
+          👉 <strong>ימינה:</strong> "בא לי!"<br>
+          👈 <strong>שמאלה:</strong> "פחות" (מעדיפים לוותר אם יש משהו טוב יותר)<br>
+          🤷 <strong>כפתור לא משנה לי:</strong> ניטרלי, זורמים לגמרי עם הקבוצה<br>
+          ⛔ <strong>כפתור ממש לא:</strong> קו אדום מוחלט (מוגבל לפעם 1 בלבד!).
+        </p>
+        <button class="btn-main" onclick="startGame()">יאללה, מתחילים במשחק! 🚀</button>
+      </div>
+
+      <div class="controls-container" id="practice-controls">
+        <div class="controls-buttons-row">
+          <button class="btn-neutral-single" onclick="handlePracticeAction('neutral')">
+            <span>לא משנה לי</span><span style="font-size: 1.1rem;">🤷</span>
+          </button>
+          <button class="btn-veto-single" onclick="handlePracticeAction('veto')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+            <span>ממש לא (1)</span>
+          </button>
+        </div>
+        <div class="swipe-hint">
+          <span>👉 ימינה: בא לי!</span><span>•</span><span>👈 שמאלה: פחות</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- מסך שאלות הרגיל -->
+    <div id="screen-swipe" class="screen">
+      <div id="user-turn-badge" class="turn-badge">תור של: משתמש 1</div>
+      <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px;" id="question-progress">שאלה 1 מתוך 9</div>
+      
+      <div class="deck-container" id="deck-container"></div>
+
+      <div class="controls-container">
+        <div class="controls-buttons-row">
+          <button class="btn-neutral-single" id="btn-neutral-action" onclick="recordChoice('neutral')">
+            <span>לא משנה לי</span><span style="font-size: 1.1rem;">🤷</span>
+          </button>
+          <button class="btn-veto-single" id="btn-veto-action" onclick="recordChoice('veto')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+            <span id="veto-label">ממש לא (1)</span>
+          </button>
+        </div>
+        <div class="swipe-hint">
+          <span>👉 ימינה: בא לי!</span><span>•</span><span>👈 שמאלה: פחות</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- מסך מעבר בין משתתפים -->
+    <div id="screen-transition" class="screen">
+      <div style="text-align: center; padding: 26px 8px;">
+        <div style="width: 80px; height: 80px; border-radius: 50%; background: #eff6ff; color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <h1>תורך הסתיים!</h1>
+        <p class="subtitle" id="transition-text">מעבירים את הטלפון למשתתף הבא בלי לגלות מה נבחר...</p>
+        <button class="btn-main" onclick="startNextUserTurn()">אני מוכן/ה, תורי! 🎬</button>
+      </div>
+    </div>
+
+    <!-- מסך טעינה -->
+    <div id="screen-loading" class="screen">
+      <div style="text-align: center; padding: 36px 8px;">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;">מחשבים את שקלול הוייב...</h2>
+        <p class="subtitle">בודקים זמינות אמיתית בכל המנויים שסומנו</p>
+        <div class="loader"></div>
+      </div>
+    </div>
+
+    <!-- מסך תוצאות סופי -->
+    <div id="screen-results" class="screen">
+      <h1>יש לנו הכרעה! 🎉</h1>
+      <p class="subtitle">הנה 3 ההמלצות המנצחות שמחכות לכם עכשיו:</p>
+      <div class="results-list" id="results-container"></div>
+      <button class="btn-refresh-batch" onclick="giveMeMoreResults()">
+        <span>פחות התחברנו? תנו עוד 3</span><span style="font-size: 1.15rem;">🎲</span>
+      </button>
+      <button class="btn-main" style="margin-top: 10px;" onclick="startMoviesCategory()">התחל שאלון מחדש 🔄</button>
+      <button class="btn-text-back" style="margin-top: 14px; font-size: 0.9rem;" onclick="goToHub()">חזרה לתפריט הראשי</button>
+    </div>
+  </div>
+
+  <!-- חלון פרטים מלאים -->
+  <div id="details-modal" class="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <img id="modal-img" class="modal-poster" src="" alt="פוסטר רשמי">
+      <h2 id="modal-title" style="font-size: 1.35rem; font-weight: 800; color: #0f172a; margin-bottom: 6px;"></h2>
+      <div id="modal-where" style="color: var(--accent); font-weight: 700; margin-bottom: 12px; font-size: 0.95rem;"></div>
+      <p id="modal-desc" style="color: #475569; font-size: 0.92rem; line-height: 1.55; margin-bottom: 18px;"></p>
+      <button class="btn-main" onclick="closeModal()">מעולה, תודה!</button>
+    </div>
+  </div>
+
+  <script>
+    const EMBEDDED_TMDB_API_KEY = "3c47321c419d96dcc447966e374b20fe"; 
+    const MAX_VETOES = 1;
+
+    let currentMode = 'couple';
+    let usersList = ["משתמש 1", "משתמש 2"];
+    let currentUserIndex = 0;
+    let selectedProviders = [];
+    let currentCardIndex = 0;
+    let allUserAnswers = {};
+    let userVetoesLeft = {};
+    let isTransitioning = false;
+    let currentMatchedPool = [];
+    let seenTitlesInSession = new Set();
+
+    function showScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function goToHub() { showScreen('screen-hub'); }
+    
+    function startMoviesCategory() {
+      seenTitlesInSession.clear();
+      showScreen('screen-setup');
+    }
+
+    function showConstructionNotice(title, icon) {
+      document.getElementById('construction-title').innerText = `${title} - בפיתוח!`;
+      document.getElementById('construction-icon').innerText = icon;
+      showScreen('screen-construction');
+    }
+
+    const vibeQuestions = [
+      { id: 'comedy', tag: 'קומדיה וצחוק', title: 'לכבות את הראש ולצחוק?', desc: 'משהו קליל, שנון ומצחיק בלי עלילות כבדות', bgImage: 'https://images.unsplash.com/photo-1543807535-eceef0bc6599?auto=format&fit=crop&w=800&q=80', genreId: 35 },
+      { id: 'thriller', tag: 'מתח ומסתורין', title: 'להישאר במתח עד הרגע האחרון?', desc: 'תעלומות, קונספירציות וטוויסטים ששורפים את המוח', bgImage: 'https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80', genreId: 53 },
+      { id: 'action', tag: 'אדרנלין וקצב מהיר', title: 'אקשן, מרדפים וקצב שלא עוצר?', desc: 'דופק גבוה, יריות, פיצוצים ועוצמה מסחררת', bgImage: 'https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?auto=format&fit=crop&w=800&q=80', genreId: 28 },
+      { id: 'movie_only', tag: 'פורמט צפייה', title: 'סרט מלא שמסיימים הערב?', desc: 'חוויה קולנועית של שעה וחצי-שעתיים', bgImage: 'https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=800&q=80', isMovie: true },
+      { id: 'drama', tag: 'עומק ודרמה', title: 'סיפור אנושי חזק שנשאר איתנו?', desc: 'דרמה מרתקת, מרגשת ועמוקה', bgImage: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?auto=format&fit=crop&w=800&q=80', genreId: 18 },
+      { id: 'scifi', tag: 'מד"ב ופנטזיה', title: 'בריחה מהמציאות ועולמות אחרים?', desc: 'חלל, מציאות חלופית, עתידנות וכוחות על', bgImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80', genreId: 878 },
+      { id: 'crime_docu', tag: 'פשע וחקירות', title: 'פרשיות מסתוריות, מאפיה או דוקו?', desc: 'חקירות משטרה, פשע אמיתי ותעלומות מטלטלות', bgImage: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=800&q=80', genreId: 80 },
+      { id: 'romance', tag: 'רומנטיקה ו-Feel Good', title: 'סיפור חם, אופטימי שעושה טוב?', desc: 'אהבה, חיבור מרגש, חום אנושי וחיוך רחב', bgImage: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80', genreId: 10749 },
+      { id: 'israeli', tag: 'כחול-לבן', title: 'העדפה מובהקת ליצירה ישראלית?', desc: 'תכנים מקומיים בשפה ובהומור שלנו', bgImage: 'https://images.unsplash.com/photo-1544971587-b842c27f8e14?auto=format&fit=crop&w=800&q=80', isIsraeli: true }
+    ];
+
+    const verifiedLocalCatalog = [
+      { title: "קופה ראשית", provider: "כאן BOX", platformId: "kan", type: "סדרת קומדיה ישראלית", genres: [35], isIsraeli: true, vote_average: 8.8, poster: "https://upload.wikimedia.org/wikipedia/he/9/91/Kupa_Rashit_Poster.jpg", desc: "עלילות העובדים והלקוחות בסניף שפע יששכר ביבנה. מצחיק ומדויק להפליא." },
+      { title: "מנאייכ", provider: "כאן BOX", platformId: "kan", type: "סדרת מתח ודרמה ישראלית", genres: [53, 18, 80], isIsraeli: true, vote_average: 8.6, poster: "https://upload.wikimedia.org/wikipedia/he/0/07/Manayek_poster.jpg", desc: "חוקר מח\"ש יוצא למלחמה חסרת פשרות בשחיתות בצמרת המשטרה." },
+      { title: "טהרן", provider: "כאן BOX", platformId: "kan", type: "סדרת מתח וריגול ישראלית", genres: [53, 28], isIsraeli: true, vote_average: 8.2, poster: "https://upload.wikimedia.org/wikipedia/he/a/ab/Tehran_series_poster.jpg", desc: "האקרית צעירה של המוסד יוצאת למשימה חשאית ומסוכנת בלב בירת איראן." },
+      { title: "שעת נעילה", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמה ומלחמה ישראלית", genres: [18, 28], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/6/63/Valley_of_Tears_poster.jpg", desc: "סדרת דרמה אפית המשחזרת את ימי הלחימה ברמת הגולן במלחמת יום הכיפורים." },
+      { title: "היהודים באים", provider: "כאן BOX", platformId: "kan", type: "סדרת מערכונים וסאטירה", genres: [35], isIsraeli: true, vote_average: 8.5, poster: "https://upload.wikimedia.org/wikipedia/he/5/5f/HaYehudim_Ba%27im.jpg", desc: "מבט סאטירי, חתרני וקורע מצחוק על ההיסטוריה של עם ישראל מהתנ\"ך ועד ימינו." },
+      { title: "המפקדת", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמה קומית ישראלית", genres: [35, 18], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/f/f3/Hamefakedet.jpg", desc: "קצינה צעירה ומעט מוזרה מקבלת פיקוד על מחלקה מאתגרת בבסיס טירונים." },
+      { title: "חאנשי", provider: "כאן BOX", platformId: "kan", type: "סדרת קומדיה ישראלית", genres: [35], isIsraeli: true, vote_average: 7.7, poster: "https://upload.wikimedia.org/wikipedia/he/4/4c/Chanshi_poster.jpg", desc: "צעירה יהודייה דתייה מברוקלין עוזבת הכל ועולה לארץ בחיפוש אחר חופש ופנטזיות." },
+      { title: "חזרות", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמה קומית רומנטית", genres: [35, 18, 10749], isIsraeli: true, vote_average: 8.5, poster: "https://upload.wikimedia.org/wikipedia/he/9/9b/Chazarot_Poster.jpg", desc: "זוג יוצרי תיאטרון שנפרד נאלץ לעבוד יחד על העלאת המחזה שכתבו על פרידתם." },
+      { title: "שישו ושמחו", provider: "כאן BOX", platformId: "kan", type: "סדרה קומית מוזיקלית", genres: [35], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/4/49/Shishu_Vesimchu.jpg", desc: "קומדיה סאטירית המתרחשת במקהלת הרבנות הצבאית הראשית." },
+      { title: "עלומים", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמת פשע ישראלית", genres: [18, 80], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/d/dc/Alumim_poster.jpg", desc: "חבורת נערים בבית ספר לנוער בסיכון מסתבכת בחקירת תקיפה חמורה." },
+      { title: "איסט סייד", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמה ומתח ישראלית", genres: [18, 53], isIsraeli: true, vote_average: 7.8, poster: "https://upload.wikimedia.org/wikipedia/he/4/43/East_Side_poster.jpg", desc: "איש שב\"כ לשעבר פועל כמתווך עסקאות נדל\"ן מפוקפקות וטעונות במזרח ירושלים." },
+      { title: "המזח", provider: "כאן BOX", platformId: "kan", type: "סדרת דרמה ומלחמה ישראלית", genres: [18, 28], isIsraeli: true, vote_average: 8.2, poster: "https://upload.wikimedia.org/wikipedia/he/a/aa/HaMizach_poster.jpg", desc: "סיפור הגבורה והמצור הדרמטי על מוצב המזח בתעלת סואץ במלחמת יום הכיפורים." },
+      { title: "מלאך משחית", provider: "כאן BOX", platformId: "kan", type: "סדרת מתח ואימה פסיכולוגית", genres: [53, 878], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/8/8f/Malach_Mashchit.jpg", desc: "שד רצחני זורע אימה בקהילה חסידית במאה שערים בירושלים." },
+      { title: "מבצע סבתא", provider: "כאן BOX", platformId: "kan", type: "סרט קומדיה ישראלי", genres: [35], isIsraeli: true, vote_average: 8.7, poster: "https://upload.wikimedia.org/wikipedia/he/1/10/Mivtsa_Savta.jpg", desc: "הקאלט הבלתי נשכח על שלושת האחים בקיבוץ עסיסים ומבצע הלוויה הבלתי אפשרי." },
+      { title: "בופור", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה ומלחמה ישראלי", genres: [18, 28], isIsraeli: true, vote_average: 7.6, poster: "https://upload.wikimedia.org/wikipedia/he/6/61/Beaufort_film_poster.jpg", desc: "ימיהם האחרונים ומורטי העצבים של לוחמי צה\"ל במוצב הבופור לפני הנסיגה מלבנון." },
+      { title: "ואלס עם באשיר", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה ואנימציה דוקומנטרי", genres: [18, 80], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/1/10/Waltz_with_Bashir_poster.jpg", desc: "יצירת המופת המועמדת לאוסקר של ארי פולמן על חיפוש אחר זיכרונות ממלחמת לבנון הראשונה." },
+      { title: "אושפיזין", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה וקומדיה ישראלי", genres: [18, 35], isIsraeli: true, vote_average: 7.8, poster: "https://upload.wikimedia.org/wikipedia/he/c/c5/Ushpizin_poster.jpg", desc: "בעל תשובה חסידי בירושלים ואשתו מקבלים אורחים בלתי קרואים ומשונים בחג הסוכות." },
+      { title: "כיפור", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה ומלחמה", genres: [18, 28], isIsraeli: true, vote_average: 7.4, poster: "https://upload.wikimedia.org/wikipedia/he/8/87/Kippur_film_poster.jpg", desc: "סרטו המטלטל של עמוס גיתאי על צוות חילוץ מוסק ברמת הגולן במלחמת יום הכיפורים." },
+      { title: "הלהקה", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה ומוזיקה קלאסי", genres: [35, 18], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/a/ab/HaLahaka_poster.jpg", desc: "יצירת הקאלט של אבי נשר על היחסים, התחרות והאהבות בלהקה צבאית מובחרת." },
+      { title: "שרוכים", provider: "כאן BOX", platformId: "kan", type: "סרט דרמה ישראלי מרגש", genres: [18], isIsraeli: true, vote_average: 7.8, poster: "https://upload.wikimedia.org/wikipedia/he/5/52/Laces_film_poster.jpg", desc: "מערכת יחסים מורכבת ומלאת חום בין אב מזדקן לבנו הבוגר בעל הצרכים המיוחדים." },
+      { title: "גאליס", provider: "HOT / NEXT", platformId: "hot", type: "סדרת מתח והרפתקאות לנוער", genres: [53, 28], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/8/87/Galis_poster.jpg", desc: "חניכי מחנה הקיץ גאליס יוצאים להרפתקה עוצרת נשימה בעקבות אוצרות ומסתורין קדום." },
+      { title: "שבאבניקים", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמה קומית ישראלית", genres: [35, 18], isIsraeli: true, vote_average: 8.2, poster: "https://upload.wikimedia.org/wikipedia/he/5/52/Shababnikim_poster.jpg", desc: "ארבעה תלמידי ישיבה יוקרתית בירושלים מנסים לשלב בין העולם החרדי לחיים המודרניים." },
+      { title: "זגורי אימפריה", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמה קומית ישראלית", genres: [18, 35], isIsraeli: true, vote_average: 8.3, poster: "https://upload.wikimedia.org/wikipedia/he/3/3f/Zaguri_Imperia.jpg", desc: "הסאגה המשפחתית המפורסמת מבאר שבע בעקבות הסרת הקללה ופתיחת הפלאפל." },
+      { title: "עספור", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמת פשע ישראלית", genres: [18, 80, 35], isIsraeli: true, vote_average: 8.4, poster: "https://upload.wikimedia.org/wikipedia/he/2/22/Asfur_poster.jpg", desc: "ארבעה חברים ירושלמים החיים באוטובוסים נטושים נלחמים להציל את שטח האדמה שלהם." },
+      { title: "מטומטמת", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמת פשע ומתח ישראלית", genres: [53, 18, 80], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/b/b3/Metumtemet_poster.jpg", desc: "שחקנית כושלת מושתלת כתלמידת תיכון במבצע סמוי של המשטרה." },
+      { title: "איש חשוב מאוד", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמה ישראלית", genres: [18], isIsraeli: true, vote_average: 8.3, poster: "https://upload.wikimedia.org/wikipedia/he/e/e0/Very_Important_Person.jpg", desc: "יהודה לוי מגלם גרסה חשופה ומורכבת של עצמו בנבכי עולם הזוהר הישראלי." },
+      { title: "מלכות", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמת פשע ישראלית", genres: [80, 18, 28], isIsraeli: true, vote_average: 7.7, poster: "https://upload.wikimedia.org/wikipedia/he/4/4b/Malkot_poster.jpg", desc: "נשות משפחת פשע נאלצות לתפוס פיקוד לאחר שכל הגברים חוסלו במסיבת רווקים." },
+      { title: "הבורר", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמת פשע מופתית", genres: [80, 18, 53], isIsraeli: true, vote_average: 8.5, poster: "https://upload.wikimedia.org/wikipedia/he/6/6a/HaBorer_poster.jpg", desc: "עובד סוציאלי צעיר מגלה שאביו הביולוגי הוא ראש משפחת פשע אימתני הידוע כ'הבורר'." },
+      { title: "פצועים בראש", provider: "HOT / NEXT", platformId: "hot", type: "סדרת מתח ואקשן ישראלית", genres: [53, 28], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/c/c5/Ptzuyim_BaRosh.jpg", desc: "שני חברים מקימים מחתרת מוסרית ללקיחת החוק לידיים במציאות הישראלית." },
+      { title: "ירושלים", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמת מתח ופשע", genres: [53, 80], isIsraeli: true, vote_average: 7.8, poster: "https://upload.wikimedia.org/wikipedia/he/d/dc/Jerusalem_series_poster.jpg", desc: "קציני משטרה בעיר העתיקה מנסים למנוע התלקחות בין-דתית אלימה." },
+      { title: "גולסטאר", provider: "HOT / NEXT", platformId: "hot", type: "דוקו-ריאליטי קומי ישראלי", genres: [35], isIsraeli: true, vote_average: 7.4, poster: "https://upload.wikimedia.org/wikipedia/he/7/7b/Goalstar.jpg", desc: "נבחרת כוכבים ישראלית יוצאת למחנה אימונים מופרע ומצחיק בכדורגל." },
+      { title: "נחמה", provider: "HOT / NEXT", platformId: "hot", type: "סדרת דרמה קומית ישראלית", genres: [35, 18], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/2/20/Nechama_poster.jpg", desc: "אב לחמישה שמתאלמן במפתיע מחליט לעזוב הכל ולהגשים חלום ישן כסטנדאפיסט." },
+      { title: "בת השוטר", provider: "HOT / NEXT", platformId: "hot", type: "סדרת נוער ומתח ישראלית", genres: [53], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/d/d3/Bat_HaShoter.jpg", desc: "נערה מרדנית שהייתה עדה לרצח מוסתרת בבית משפחה חרדית בבני ברק." },
+      { title: "לשחרר את שולי", provider: "HOT / NEXT", platformId: "hot", type: "סרט קומדיה ישראלי", genres: [35, 28], isIsraeli: true, vote_average: 7.6, poster: "https://upload.wikimedia.org/wikipedia/he/a/af/Saving_Shuli_poster.jpg", desc: "שלישיית מה קשור יוצאת למסע חילוץ מטורף ומצחיק בקולומביה." },
+      { title: "מכתוב", provider: "HOT / NEXT", platformId: "hot", type: "סרט קומדיית פשע ישראלי", genres: [35, 80], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/8/86/Maktub_poster.jpg", desc: "שני גובי צ'קים ששורדים פיגוע מחליטים להגשים את משאלות הפתקים בכותל המערבי." },
+      { title: "מחילה", provider: "HOT / NEXT", platformId: "hot", type: "סרט קומדיה ישראלי", genres: [35], isIsraeli: true, vote_average: 7.5, poster: "https://upload.wikimedia.org/wikipedia/he/5/5e/Forgiveness_2019_poster.jpg", desc: "שני חברים שהסתבכו בשוד בנק בדרום נפגשים מחדש בעשרת ימי תשובה." },
+      { title: "המוסד", provider: "HOT / NEXT", platformId: "hot", type: "סרט קומדיית אקשן ישראלי", genres: [35, 28], isIsraeli: true, vote_average: 7.3, poster: "https://upload.wikimedia.org/wikipedia/he/6/6f/Mossad_poster.jpg", desc: "פארודיה מטורפת על סוכני המוסד וה-CIA שנאלצים לשתף פעולה כדי להציל את העולם." },
+      { title: "הבלתי רשמיים", provider: "HOT / NEXT", platformId: "hot", type: "סרט דרמה וקומדיה ישראלי", genres: [18, 35], isIsraeli: true, vote_average: 7.7, poster: "https://upload.wikimedia.org/wikipedia/he/c/c8/The_Unorthodox_poster.jpg", desc: "סיפור הקמתה המרתק והמשעשע של תנועת ש\"ס בירושלים של שנות השמונים." },
+      { title: "אופנהיימר", provider: "HOT / NEXT", platformId: "hot", type: "סרט דרמה ביוגרפית", genres: [18], isIsraeli: false, vote_average: 8.1, poster: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg", desc: "יצירת המופת של כריסטופר נולאן על הפיזיקאי ג'יי רוברט אופנהיימר ופיתוח פצצת האטום." },
+      { title: "ברבי", provider: "HOT / NEXT", platformId: "hot", type: "סרט קומדיה והרפתקאות", genres: [35, 10749], isIsraeli: false, vote_average: 7.2, poster: "https://image.tmdb.org/t/p/w500/iuFNMS8U5cb6xfzi51Dbkovj7vM.jpg", desc: "ברבי וקן יוצאים מממלכת ברבילנד המושלמת למסע בעולם האמיתי." },
+      { title: "פאודה", provider: "yes / STING", platformId: "yes", type: "סדרת אקשן ומתח ישראלית", genres: [28, 53, 18], isIsraeli: true, vote_average: 8.3, poster: "https://upload.wikimedia.org/wikipedia/he/3/30/Fauda_season_4_poster.jpg", desc: "צוות מסתערבים מובחר בפעילות אינטנסיבית ומורכבת מול ארגוני טרור בגזרה." },
+      { title: "הטבח", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה ישראלית", genres: [18], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/8/87/The_Cook_Poster.jpg", desc: "איש הייטק שעוזב הכל ונשאב למטבח התובעני של מסעדת שף יוקרתית בתל אביב." },
+      { title: "תאג\"ד", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה ואקשן ישראלית", genres: [18, 28], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/2/29/Taagad_poster.jpg", desc: "עלילות חובשי תאג\"ד גדוד 33 של הצנחנים במציאות צבאית מורכבת וסוחפת." },
+      { title: "כבודו", provider: "yes / STING", platformId: "yes", type: "סדרת מתח ודרמה ישראלית", genres: [53, 18, 80], isIsraeli: true, vote_average: 8.2, poster: "https://upload.wikimedia.org/wikipedia/he/9/9b/Your_Honor_poster.jpg", desc: "שופט מחוזי מוערך נקרע בין החוק לבין בנו שהיה מעורב בתאונת פגע וברח מול משפחת פשע." },
+      { title: "על הספקטרום", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה קומית ישראלית", genres: [35, 18], isIsraeli: true, vote_average: 8.5, poster: "https://upload.wikimedia.org/wikipedia/he/7/7b/On_the_spectrum.jpg", desc: "שלושה צעירים הנמצאים על הספקטרום האוטיסטי חולקים דירה משותפת ברמת גן." },
+      { title: "שטיסל", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה ישראלית", genres: [18], isIsraeli: true, vote_average: 8.4, poster: "https://upload.wikimedia.org/wikipedia/he/c/c5/Shtisel_poster.jpg", desc: "סאגה משפחתית חמה, אנושית ומרגשת בלב השכונה החרדית בירושלים." },
+      { title: "השוטר הטוב", provider: "yes / STING", platformId: "yes", type: "סדרת קומדיה ישראלית", genres: [35], isIsraeli: true, vote_average: 7.8, poster: "https://upload.wikimedia.org/wikipedia/he/9/90/The_Good_Cop_Poster.jpg", desc: "קומדיית משטרה פרועה על שוטר ישר ומתוסכל בתחנת משטרה מוזרה." },
+      { title: "מלכת היופי של ירושלים", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה תקופתית", genres: [18, 10749], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/9/97/The_Beauty_Queen_of_Jerusalem.jpg", desc: "סאגה רחבת יריעה על ארבעה דורות של נשות משפחת ארמוזה בירושלים המנדטורית." },
+      { title: "בלאק ספייס", provider: "yes / STING", platformId: "yes", type: "סדרת מתח ישראלית", genres: [53, 18], isIsraeli: true, vote_average: 7.5, poster: "https://upload.wikimedia.org/wikipedia/he/0/05/Blackspace_poster.jpg", desc: "אירוע ירי מסתורי בתיכון בישראל מוביל חוקר לפתוח תיבת פנדורה של סודות נעורים." },
+      { title: "סרוגים", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה ישראלית", genres: [18, 10749], isIsraeli: true, vote_average: 8.3, poster: "https://upload.wikimedia.org/wikipedia/he/6/60/Srugim_poster.jpg", desc: "חייהם וחיפושם אחר זוגיות של רווקים ורווקות בביצה הדתית-לאומית בירושלים." },
+      { title: "אהבה זה כואב", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה רומנטית", genres: [18, 10749], isIsraeli: true, vote_average: 8.0, poster: "https://upload.wikimedia.org/wikipedia/he/5/52/Ahava_Zeh_Koev.jpg", desc: "סיפור האהבה המרגש בין עורכת טלוויזיה תל אביבית למוסכניק מחוספס." },
+      { title: "פמת\"א", provider: "yes / STING", platformId: "yes", type: "סדרת דרמה משפטית ישראלית", genres: [18, 53], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/d/dc/Pamta_poster.jpg", desc: "פרקליטה צעירה ונמרצת נכנסת לעבודה מול מערכת המשפט והשחיתות בפרקליטות מחוז תל אביב." },
+      { title: "אפס ביחסי אנוש", provider: "yes / STING", platformId: "yes", type: "סרט קומדיה ישראלי", genres: [35, 18], isIsraeli: true, vote_average: 7.9, poster: "https://upload.wikimedia.org/wikipedia/he/2/2f/Zero_Motivation_Poster.jpg", desc: "קומדיה צבאית מושחזת על עולם הפקידות בבסיס שיזפון הנידח." },
+      { title: "תמונת הניצחון", provider: "yes / STING", platformId: "yes", type: "סרט דרמה ומלחמה ישראלי", genres: [18, 28], isIsraeli: true, vote_average: 7.6, poster: "https://upload.wikimedia.org/wikipedia/he/8/8e/Image_of_Victory_poster.jpg", desc: "אפוס היסטורי סוחף של אבי נשר על הקרב ההירואי בקיבוץ ניצנים במלחמת העצמאות." },
+      { title: "שבע ברכות", provider: "yes / STING", platformId: "yes", type: "סרט דרמה ישראלי", genres: [18], isIsraeli: true, vote_average: 8.1, poster: "https://upload.wikimedia.org/wikipedia/he/5/5e/Seven_Blessings_poster.jpg", desc: "שבוע שבע הברכות של כלה במשפחה מרוקאית פותח פצעים ישנים וסודות עבר כואבים." },
+      { title: "סינמה סבאיא", provider: "yes / STING", platformId: "yes", type: "סרט דרמה ישראלי", genres: [18], isIsraeli: true, vote_average: 7.7, poster: "https://upload.wikimedia.org/wikipedia/he/9/9f/Cinema_Sabaya_poster.jpg", desc: "שמונה נשים יהודיות וערביות נפגשות בסדנת וידאו שמשנה את תפיסת עולמן." },
+      { title: "גולדה", provider: "yes / STING", platformId: "yes", type: "סרט דרמה היסטורית", genres: [18], isIsraeli: true, vote_average: 7.4, poster: "https://image.tmdb.org/t/p/w500/8b81g5hH5x2rZ1m4vU9w5Vj7uB.jpg", desc: "הלן מירן בתפקיד גולדה מאיר ברגעי ההכרעה הדרמטיים של מלחמת יום הכיפורים." },
+      { title: "ג'ון וויק 4", provider: "yes / STING", platformId: "yes", type: "סרט אקשן ומתח", genres: [28, 53], isIsraeli: false, vote_average: 7.8, poster: "https://image.tmdb.org/t/p/w500/vZloFAK7NKnMGKEslYPQYdkjgWM.jpg", desc: "ג'ון וויק חושף את הדרך להביס את 'השולחן הגבוה' בקרב הישרדות בינלאומי עוצר נשימה." },
+      { title: "שבעה ימים באנטבה", provider: "yes / STING", platformId: "yes", type: "סרט מתח ודרמה", genres: [53, 18, 28], isIsraeli: true, vote_average: 7.2, poster: "https://image.tmdb.org/t/p/w500/kS6Lh0J5x0h3nU1uX9kZ6v7F4bL.jpg", desc: "שחזור מותח ומסמר שיער של חטיפת מטוס אייר פראנס ומבצע החילוץ הנועז באוגנדה." },
+      { title: "בין כוכבים (Interstellar)", provider: "yes / STING", platformId: "yes", type: "סרט מד\"ב והרפתקאות", genres: [878, 18], isIsraeli: false, vote_average: 8.4, poster: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg", desc: "צוות חוקרים יוצא למסע דרך חור תולעת בחלל כדי למצוא עתיד לאנושות." }
+    ];
+
+    const hour = new Date().getHours();
+    const dynamicTitle = document.getElementById('dynamic-title');
+    if (hour >= 5 && hour < 12) dynamicTitle.innerText = "אז מה בא לנו לראות הבוקר?";
+    else if (hour >= 12 && hour < 17) dynamicTitle.innerText = "אז מה בא לנו לראות בצהריים?";
+    else dynamicTitle.innerText = "אז מה בא לנו לראות הערב?";
+
+    document.querySelectorAll('.platform-btn').forEach(btn => {
+      btn.addEventListener('click', () => btn.classList.toggle('selected'));
+    });
+
+    function selectMode(mode, element) {
+      currentMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('selected'));
+      if (element) element.classList.add('selected');
+      renderUserInputs();
+    }
+
+    function renderUserInputs() {
+      const container = document.getElementById('users-inputs-list');
+      const addBtn = document.getElementById('btn-add-friend');
+      container.innerHTML = ''; 
+
+      if (currentMode === 'solo') {
+        addBtn.style.display = 'none';
+        container.innerHTML = `<div class="user-input-row"><input type="text" class="user-name-input" placeholder="השם שלך" value="אני"></div>`;
+      } else if (currentMode === 'couple') {
+        addBtn.style.display = 'none';
+        container.innerHTML = `
+          <div class="user-input-row"><input type="text" class="user-name-input" placeholder="משתמש 1" value=""></div>
+          <div class="user-input-row"><input type="text" class="user-name-input" placeholder="משתמש 2" value=""></div>
+        `;
+      } else {
+        addBtn.style.display = 'block';
+        container.innerHTML = `
+          <div class="user-input-row"><input type="text" class="user-name-input" placeholder="חבר/ה 1" value=""></div>
+          <div class="user-input-row"><input type="text" class="user-name-input" placeholder="חבר/ה 2" value=""></div>
+          <div class="user-input-row"><input type="text" class="user-name-input" placeholder="חבר/ה 3" value=""></div>
+        `;
+      }
+    }
+    renderUserInputs();
+
+    function addFriendInput() {
+      const container = document.getElementById('users-inputs-list');
+      const inputs = container.querySelectorAll('.user-input-row');
+      if (inputs.length >= 5) return alert("מקסימום 5 משתתפים בקבוצה!");
+      
+      const row = document.createElement('div');
+      row.className = 'user-input-row';
+      row.innerHTML = `<input type="text" class="user-name-input" placeholder="חבר/ה ${inputs.length + 1}"><button type="button" class="btn-remove-user" onclick="this.parentElement.remove()">✕</button>`;
+      container.appendChild(row);
+    }
+
+    function goToPractice() {
+      const inputs = document.querySelectorAll('.user-name-input');
+      usersList = Array.from(inputs).map((inp, idx) => inp.value.trim() || (currentMode === 'solo' ? 'אני' : `משתמש ${idx + 1}`));
+      
+      selectedProviders = Array.from(document.querySelectorAll('.platform-btn.selected')).map(b => ({
+        id: b.dataset.providerId, name: b.dataset.name
+      }));
+
+      if (selectedProviders.length === 0) return alert("אנא בחרו לפחות מנוי אחד פעיל!");
+
+      showScreen('screen-practice');
+      document.getElementById('practice-feedback-card').classList.remove('active');
+      document.getElementById('practice-controls').style.display = 'flex';
+      document.getElementById('practice-deck-container').style.display = 'block';
+      document.getElementById('practice-subtitle').style.display = 'block';
+      renderPracticeCard();
+    }
+
+    function setupCardDrag(card, onCompleteAction) {
+      let startX = 0, currentX = 0, isDragging = false;
+      const yesStamp = card.querySelector('.stamp.yes');
+      const lessStamp = card.querySelector('.stamp.less');
+
+      const handleStart = (e) => {
+        if (isTransitioning) return;
+        startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        isDragging = true;
+        
+        window.addEventListener('mousemove', handleMove);
+        window.addEventListener('mouseup', handleEnd);
+        window.addEventListener('touchmove', handleMove, { passive: false });
+        window.addEventListener('touchend', handleEnd);
+      };
+
+      const handleMove = (e) => {
+        if (!isDragging || isTransitioning) return;
+        if (e.cancelable && e.type === 'touchmove') e.preventDefault();
+        
+        const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        currentX = x - startX;
+        card.style.transform = `translateX(${currentX}px) rotate(${currentX * 0.07}deg)`;
+
+        if (currentX > 35) {
+          yesStamp.style.opacity = Math.min((currentX - 35) / 55, 1);
+          lessStamp.style.opacity = 0;
+        } else if (currentX < -35) {
+          lessStamp.style.opacity = Math.min((-currentX - 35) / 55, 1);
+          yesStamp.style.opacity = 0;
+        } else {
+          yesStamp.style.opacity = lessStamp.style.opacity = 0;
+        }
+      };
+
+      const handleEnd = () => {
+        if (!isDragging || isTransitioning) return;
+        isDragging = false;
+        
+        window.removeEventListener('mousemove', handleMove);
+        window.removeEventListener('mouseup', handleEnd);
+        window.removeEventListener('touchmove', handleMove);
+        window.removeEventListener('touchend', handleEnd);
+
+        if (currentX > 80) onCompleteAction('yes');
+        else if (currentX < -80) onCompleteAction('less');
+        else {
+          card.style.transform = 'none';
+          yesStamp.style.opacity = lessStamp.style.opacity = 0;
+        }
+      };
+
+      card.addEventListener('mousedown', handleStart);
+      card.addEventListener('touchstart', handleStart, { passive: true });
+    }
+
+    function renderPracticeCard() {
+      const container = document.getElementById('practice-deck-container');
+      container.innerHTML = '';
+
+      const card = document.createElement('div');
+      card.className = 'swipe-card';
+      card.style.backgroundImage = `url('https://images.unsplash.com/photo-1522869635100-9f4c5e86aa37?auto=format&fit=crop&w=800&q=80')`;
+      card.innerHTML = `
+        <div class="stamp yes">בא לי! ✓</div><div class="stamp less">פחות ✕</div><div class="card-overlay"></div>
+        <div class="card-content">
+          <span class="card-tag" style="background: rgba(245, 158, 11, 0.45);">סיבוב תרגול חי</span>
+          <div class="card-title">בואו נבדוק שהכל ברור!</div>
+          <div class="card-desc">גררו ימינה (בא לי!), שמאלה (פחות), או השתמשו בכפתורים למטה.</div>
+        </div>
+      `;
+
+      setupCardDrag(card, handlePracticeAction);
+      container.appendChild(card);
+    }
+
+    function animateCardRemoval(card, action) {
+      if (!card) return;
+      card.style.transition = 'transform 0.25s ease, opacity 0.25s ease';
+      if (action === 'yes') card.style.transform = 'translateX(500px) rotate(20deg)';
+      else if (action === 'less') card.style.transform = 'translateX(-500px) rotate(-20deg)';
+      else if (action === 'neutral') card.style.transform = 'translateY(120px) scale(0.9)';
+      else card.style.transform = 'scale(0.85)';
+      card.style.opacity = '0';
+    }
+
+    function handlePracticeAction(action) {
+      animateCardRemoval(document.querySelector('#practice-deck-container .swipe-card'), action);
+      setTimeout(() => {
+        document.getElementById('practice-deck-container').style.display = 'none';
+        document.getElementById('practice-controls').style.display = 'none';
+        document.getElementById('practice-subtitle').style.display = 'none';
+        document.getElementById('practice-feedback-card').classList.add('active');
+      }, 250);
+    }
+
+    function startGame() {
+      currentUserIndex = 0;
+      allUserAnswers = {};
+      userVetoesLeft = {};
+      usersList.forEach(u => {
+        allUserAnswers[u] = {};
+        userVetoesLeft[u] = MAX_VETOES;
+      });
+      startUserTurn();
+    }
+
+    function startUserTurn() {
+      currentCardIndex = 0;
+      showScreen('screen-swipe');
+      updateTurnBadge();
+      updateVetoButtonUI();
+      renderCard();
+    }
+
+    function updateTurnBadge() {
+      document.getElementById('user-turn-badge').innerText = `תור של: ${usersList[currentUserIndex]}`;
+    }
+
+    function updateVetoButtonUI() {
+      const activeUser = usersList[currentUserIndex];
+      const remaining = userVetoesLeft[activeUser];
+      const vetoBtn = document.getElementById('btn-veto-action');
+      document.getElementById('veto-label').innerText = `ממש לא (${remaining})`;
+      if (remaining <= 0) vetoBtn.classList.add('disabled');
+      else vetoBtn.classList.remove('disabled');
+    }
+
+    function renderCard() {
+      isTransitioning = false;
+      const container = document.getElementById('deck-container');
+      container.innerHTML = '';
+
+      if (currentCardIndex >= vibeQuestions.length) {
+        if (currentUserIndex < usersList.length - 1) {
+          currentUserIndex++;
+          document.getElementById('transition-text').innerText = `מעבירים את הטלפון ל-${usersList[currentUserIndex]} בלי לגלות מה בחרתם...`;
+          showScreen('screen-transition');
+        } else {
+          fetchAndCalculateResults();
+        }
+        return;
+      }
+
+      document.getElementById('question-progress').innerText = `שאלה ${currentCardIndex + 1} מתוך ${vibeQuestions.length}`;
+      updateVetoButtonUI();
+
+      const q = vibeQuestions[currentCardIndex];
+      const card = document.createElement('div');
+      card.className = 'swipe-card';
+      card.style.backgroundImage = `url('${q.bgImage}')`;
+      card.innerHTML = `
+        <div class="stamp yes">בא לי! ✓</div><div class="stamp less">פחות ✕</div><div class="card-overlay"></div>
+        <div class="card-content">
+          <span class="card-tag">${q.tag}</span><div class="card-title">${q.title}</div><div class="card-desc">${q.desc}</div>
+        </div>
+      `;
+
+      setupCardDrag(card, recordChoice);
+      container.appendChild(card);
+    }
+
+    function recordChoice(choice) {
+      if (isTransitioning) return;
+      const activeUser = usersList[currentUserIndex];
+
+      if (choice === 'veto') {
+        if (userVetoesLeft[activeUser] <= 0) return;
+        userVetoesLeft[activeUser]--;
+      }
+
+      isTransitioning = true;
+      allUserAnswers[activeUser][vibeQuestions[currentCardIndex].id] = choice;
+      animateCardRemoval(document.querySelector('#deck-container .swipe-card'), choice);
+
+      setTimeout(() => {
+        currentCardIndex++;
+        renderCard();
+      }, 200);
+    }
+
+    function startNextUserTurn() { startUserTurn(); }
+
+    function calculateGroupMatchScore(item, preferIsraeli) {
+      const N = usersList.length;
+      let totalScoreSum = 0;
+      let scoredCategoriesCount = 0;
+      let conflictPenalty = 0; 
+
+      vibeQuestions.forEach(q => {
+        const itemHasFeature = (q.genreId && item.genres?.includes(q.genreId)) || 
+                               (q.isIsraeli && item.isIsraeli) || 
+                               (q.isMovie && item.type.includes('סרט'));
+                               
+        let questionActive = false; 
+        let qScore = 0;
+        let yesCount = 0;
+        let lessCount = 0;
+
+        usersList.forEach(u => {
+          const ans = allUserAnswers[u]?.[q.id] || 'neutral';
+          if (ans !== 'neutral') questionActive = true;
+
+          if (ans === 'yes') yesCount++;
+          if (ans === 'less') lessCount++;
+
+          if (itemHasFeature) {
+            if (ans === 'yes') qScore += 1.0;
+            else if (ans === 'neutral') qScore += 0.5;
+            else if (ans === 'less') qScore += 0.1;
+          } else {
+            if (ans === 'less') qScore += 0.8; 
+            else if (ans === 'neutral') qScore += 0.5;
+            else if (ans === 'yes') qScore += 0.0;
+          }
+        });
+
+        if (questionActive || itemHasFeature) {
+          scoredCategoriesCount++;
+          totalScoreSum += (qScore / N);
+
+          if (itemHasFeature && yesCount > 0 && lessCount > 0) {
+            conflictPenalty += 12; 
+          }
+        }
+      });
+
+      if (scoredCategoriesCount === 0) return 75;
+
+      let finalScore = Math.round(35 + ((totalScoreSum / scoredCategoriesCount) * 61));
+      finalScore -= conflictPenalty;
+      finalScore += Math.round(Math.min(Math.max(((item.vote_average || 7.5) - 6.0) * 1.2, 0), 4));
+      if (preferIsraeli && item.isIsraeli) finalScore = Math.min(finalScore + 4, 100);
+
+      return Math.min(Math.max(finalScore, 40), 100);
+    }
+
+    async function fetchAndCalculateResults() {
+      showScreen('screen-loading');
+
+      const vetoIsraeli = usersList.some(u => allUserAnswers[u]['israeli'] === 'veto');
+      const preferIsraeli = !vetoIsraeli && usersList.some(u => allUserAnswers[u]['israeli'] === 'yes');
+      const vetoMovies = usersList.some(u => allUserAnswers[u]['movie_only'] === 'veto');
+      const wantMoviesOnly = !vetoMovies && usersList.some(u => allUserAnswers[u]['movie_only'] === 'yes');
+
+      const vetoedGenres = vibeQuestions.filter(q => q.genreId && usersList.some(u => allUserAnswers[u][q.id] === 'veto')).map(q => q.genreId);
+      const wantedGenres = vibeQuestions.filter(q => q.genreId && usersList.some(u => allUserAnswers[u][q.id] === 'yes') && !vetoedGenres.includes(q.genreId)).map(q => q.genreId);
+
+      const allowedLangs = vetoIsraeli ? ['en'] : ['en', 'he'];
+      let platformBuckets = {};
+      selectedProviders.forEach(p => platformBuckets[p.name] = []);
+
+      const tmdbWatchProviders = selectedProviders.filter(p => !isNaN(p.id));
+      
+      if (EMBEDDED_TMDB_API_KEY && tmdbWatchProviders.length > 0) {
+        const endpointsToQuery = wantMoviesOnly ? ['discover/movie'] : (vetoMovies ? ['discover/tv'] : ['discover/tv', 'discover/movie']);
+        const genreQuery = wantedGenres.length > 0 ? `&with_genres=${wantedGenres.join('|')}` : '';
+        const withoutGenreQuery = vetoedGenres.length > 0 ? `&without_genres=${vetoedGenres.join(',')}` : '';
+        const randomPage = Math.floor(Math.random() * 3) + 1;
+
+        try {
+          for (const endpoint of endpointsToQuery) {
+            await Promise.all(tmdbWatchProviders.map(async (provider) => {
+              const langParam = preferIsraeli ? '&with_original_language=he' : '';
+              const url = `https://api.themoviedb.org/3/${endpoint}?api_key=${EMBEDDED_TMDB_API_KEY}&language=he-IL&sort_by=popularity.desc&page=${randomPage}${genreQuery}${withoutGenreQuery}${langParam}&vote_count.gte=25&with_watch_providers=${provider.id}&watch_region=IL&with_watch_monetization_types=flatrate|free`;
+              
+              const res = await fetch(url);
+              if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+              const data = await res.json();
+
+              if (data.results && data.results.length > 0) {
+                const validResults = data.results.filter(item => {
+                  if (!item.poster_path || !allowedLangs.includes(item.original_language)) return false;
+                  if (/[\u0B80-\u0BFF\u0900-\u097F\u0600-\u06FF\u4E00-\u9FFF]/.test(item.title || item.name || '')) return false;
+                  if (item.genre_ids?.some(gid => vetoedGenres.includes(gid))) return false;
+                  return true;
+                });
+
+                validResults.sort(() => Math.random() - 0.5).slice(0, 8).forEach(item => {
+                  const candidate = {
+                    title: item.title || item.name,
+                    provider: provider.name,
+                    type: endpoint.includes('movie') ? 'סרט' : 'סדרה',
+                    genres: item.genre_ids || [],
+                    isIsraeli: item.original_language === 'he',
+                    vote_average: item.vote_average || 7.5,
+                    poster: `https://image.tmdb.org/t/p/w500${item.poster_path}`,
+                    desc: item.overview || `כותר מוביל ומומלץ לצפייה ישירה ב-${provider.name}.`
+                  };
+                  candidate.matchScore = calculateGroupMatchScore(candidate, preferIsraeli);
+                  platformBuckets[provider.name].push(candidate);
+                });
+              }
+            }));
+          }
+        } catch (err) {
+          console.error("שגיאה במשיכת נתונים מ-TMDB, מעבר חלופי למאגר המקומי בלבד.", err);
+        }
+      }
+
+      verifiedLocalCatalog.forEach(item => {
+        if (!platformBuckets[item.provider] || (vetoIsraeli && item.isIsraeli) || (vetoMovies && item.type.includes('סרט')) || (wantMoviesOnly && !item.type.includes('סרט')) || (item.genres?.some(g => vetoedGenres.includes(g)))) return;
+        const candidate = { ...item };
+        candidate.matchScore = calculateGroupMatchScore(candidate, preferIsraeli);
+        platformBuckets[item.provider].push(candidate);
+      });
+
+      let flattenedPool = [];
+      Object.values(platformBuckets).forEach(bucket => flattenedPool.push(...bucket.sort((a, b) => b.matchScore - a.matchScore)));
+      flattenedPool.sort((a, b) => b.matchScore - a.matchScore);
+
+      const uniqueMap = new Map();
+      flattenedPool.forEach(item => {
+        const cleanTitle = item.title.replace(/\(.*\)/g, '').trim().toLowerCase();
+        if (!uniqueMap.has(cleanTitle)) uniqueMap.set(cleanTitle, item);
+      });
+
+      currentMatchedPool = Array.from(uniqueMap.values());
+      displayNextBatch();
+    }
+
+    function displayNextBatch() {
+      let availableItems = currentMatchedPool.filter(item => !seenTitlesInSession.has(item.title.replace(/\(.*\)/g, '').trim().toLowerCase()));
+
+      if (availableItems.length === 0 && currentMatchedPool.length > 0) {
+        seenTitlesInSession.clear();
+        availableItems = [...currentMatchedPool];
+      }
+
+      if (availableItems.length === 0) return renderTop3([]);
+
+      let selectedBatch = [], usedProvidersInBatch = new Set();
+      for (const item of availableItems) {
+        if (selectedBatch.length >= 3) break;
+        const cleanTitle = item.title.replace(/\(.*\)/g, '').trim().toLowerCase();
+        if (!usedProvidersInBatch.has(item.provider)) {
+          selectedBatch.push(item);
+          usedProvidersInBatch.add(item.provider);
+          seenTitlesInSession.add(cleanTitle);
+        }
+      }
+
+      if (selectedBatch.length < 3) {
+        for (const item of availableItems) {
+          if (selectedBatch.length >= 3) break;
+          const cleanTitle = item.title.replace(/\(.*\)/g, '').trim().toLowerCase();
+          if (!selectedBatch.includes(item)) {
+            selectedBatch.push(item);
+            seenTitlesInSession.add(cleanTitle);
+          }
+        }
+      }
+
+      renderTop3(selectedBatch.sort((a, b) => b.matchScore - a.matchScore));
+    }
+
+    function giveMeMoreResults() { displayNextBatch(); }
+
+    function renderTop3(items) {
+      showScreen('screen-results');
+      const container = document.getElementById('results-container');
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: var(--text-muted); padding: 24px; line-height: 1.6;">לא נמצאו כותרים נוספים שעונים על כל הסינונים והקווים האדומים שהוגדרו.<br>נסו סיבוב חדש עם פחות וטו!</p>`;
+        return;
+      }
+
+      items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.onclick = () => openModal(item);
+        card.innerHTML = `
+          <img src="${item.poster}" class="result-poster" alt="${item.title}" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400'">
+          <div class="result-info">
+            <div class="result-title">${index === 0 ? '👑 ' : ''}${item.title}</div>
+            <div style="font-size: 0.8rem; color: var(--text-muted);">${item.type}</div>
+            <div class="result-provider">📺 לצפייה ב: ${item.provider}</div>
+          </div>
+          <div class="match-tag">${item.matchScore}% התאמה</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function openModal(item) {
+      const modalImg = document.getElementById('modal-img');
+      modalImg.src = item.poster;
+      modalImg.onerror = () => modalImg.src = 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=600';
+      document.getElementById('modal-title').innerText = item.title;
+      document.getElementById('modal-where').innerText = `זמין לצפייה ישירה ב: ${item.provider}`;
+      document.getElementById('modal-desc').innerText = item.desc;
+      document.getElementById('details-modal').classList.add('active');
+    }
+
+    function closeModal() { document.getElementById('details-modal').classList.remove('active'); }
+  </script>
+</body>
+</html>
